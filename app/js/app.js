@@ -37,6 +37,18 @@ if (params.get('seed') === 'demo' && earned.size === 0) {
 let selectedId = Number(params.get('trophy') ?? '0') || null;
 if (selectedId && !byId.has(selectedId)) selectedId = null;
 
+let lastJustEarned = null;
+
+function showToast(message) {
+  if (!elements.toast) return;
+  elements.toast.textContent = message;
+  elements.toast.hidden = false;
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(() => {
+    elements.toast.hidden = true;
+  }, 6000);
+}
+
 const filters = {
   query: '',
   grade: params.get('grade') ?? 'all',
@@ -59,6 +71,8 @@ const elements = {
   exportBtn: document.getElementById('exportBtn'),
   importInput: document.getElementById('importInput'),
   resetBtn: document.getElementById('resetBtn'),
+  toast: document.getElementById('toast'),
+  toolbar: document.getElementById('toolbar'),
   list: document.getElementById('trophyList'),
   listMeta: document.getElementById('listMeta'),
   listEmpty: document.getElementById('listEmpty'),
@@ -103,7 +117,7 @@ function renderList() {
     const row = document.createElement('li');
     const button = document.createElement('button');
     button.type = 'button';
-    button.className = `trophy-row${earned.has(trophy.id) ? ' earned' : ''}${selectedId === trophy.id ? ' selected' : ''}`;
+    button.className = `trophy-row${earned.has(trophy.id) ? ' earned' : ''}${selectedId === trophy.id ? ' selected' : ''}${lastJustEarned === trophy.id ? ' just-earned' : ''}`;
     button.setAttribute('aria-pressed', String(earned.has(trophy.id)));
 
     const box = document.createElement('input');
@@ -189,10 +203,13 @@ function renderAll() {
 }
 
 function toggleEarned(id) {
-  if (earned.has(id)) earned.delete(id);
+  const wasEarned = earned.has(id);
+  if (wasEarned) earned.delete(id);
   else earned.add(id);
   saveProgress(earned);
+  lastJustEarned = wasEarned ? null : id;
   renderAll();
+  if (!wasEarned) showToast(`✓ ${byId.get(id).name} earned — ${earned.size} of 55 trophies`);
 }
 
 function openTrophy(id) {
@@ -215,6 +232,7 @@ function showView(view) {
   document.getElementById('checklistView').hidden = view !== 'checklist';
   document.getElementById('roadmapView').hidden = view !== 'roadmap';
   document.getElementById('missablesView').hidden = view !== 'missables';
+  if (elements.toolbar) elements.toolbar.style.display = view === 'checklist' ? '' : 'none';
   const url = new URL(location.href);
   url.searchParams.set('view', view);
   history.replaceState(null, '', url);
@@ -244,7 +262,10 @@ elements.spoiler.addEventListener('change', () => {
   filters.spoiler = elements.spoiler.checked;
   renderAll();
 });
-elements.exportBtn.addEventListener('click', () => exportProgressFile(earned));
+elements.exportBtn.addEventListener('click', () => {
+  exportProgressFile(earned);
+  showToast(`Exported leonida-ledger-progress.json — ${earned.size} of 55 earned`);
+});
 elements.importInput.addEventListener('change', async (event) => {
   const file = event.target.files?.[0];
   if (!file) return;

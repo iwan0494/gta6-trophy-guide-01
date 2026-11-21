@@ -27,13 +27,18 @@
   </div>
 </header>
 
+<div class="cite-banner" role="note">
+  <span class="cite-big">55/55 trophies &middot; every step cited &middot; 13 sources</span>
+  <span class="cite-sub">1 Platinum &middot; 2 Gold &middot; 6 Silver &middot; 46 Bronze &middot; 28 hidden &mdash; the full official list</span>
+</div>
+
 <nav class="tabs" aria-label="Views">
   <button type="button" data-view="checklist" class="tab active" aria-current="page">Checklist</button>
   <button type="button" data-view="roadmap" class="tab">Roadmap to Platinum</button>
   <button type="button" data-view="missables" class="tab">Missables <span class="tab-badge">1</span></button>
 </nav>
 
-<section class="toolbar" aria-label="Find and filter trophies">
+<section class="toolbar" id="toolbar" aria-label="Find and filter trophies">
   <label class="search-label">Search
     <input id="searchInput" type="search" placeholder="Trophy, mission, place…" autocomplete="off">
   </label>
@@ -106,8 +111,41 @@
 
   <section id="missablesView" class="view" hidden>
     <h2>Missable trophies</h2>
-    <p class="missables-intro">Built from the official descriptions, only <strong>one</strong> trophy can be missed.
-    Everything else is still earnable in free roam after the story, so the cleanup is long but never locked out.</p>
+    <p class="missables-intro">Built from the official descriptions, only <strong>one</strong> trophy can be missed — everything else is still earnable in free roam.</p>
+    <div class="map-panel">
+      <h3>Where it happens &mdash; map of Leonida</h3>
+      <svg viewBox="0 0 1160 262" role="img" aria-label="Schematic map of Leonida with the missable moment and collectible areas marked">
+        <g transform="translate(0,4) scale(1,0.75)">
+        <rect x="0" y="0" width="1160" height="340" fill="#cfe0e6"/>
+        <path d="M60,300 L120,180 L200,120 L330,80 L520,60 L700,80 L900,60 L1060,110 L1100,200 L1040,290 L820,310 L520,320 L260,315 Z" fill="#eadfc2" stroke="#a67c1a" stroke-width="2"/>
+        <ellipse cx="560" cy="190" rx="90" ry="38" fill="#9fc3d4" stroke="#5b8ba3" stroke-width="1.5"/>
+        <text x="560" y="195" text-anchor="middle" font-size="14" font-family="sans-serif" fill="#2c5a6e">Lake Leonida</text>
+        <polygon points="480,82 512,48 544,82" fill="#b9a98a" stroke="#8a7a5c" stroke-width="1.5"/>
+        <text x="512" y="102" text-anchor="middle" font-size="14" font-weight="bold" font-family="sans-serif">Mount Kalaga</text>
+        <path d="M420,270 q30,-14 60,0 t60,0 t60,0" fill="none" stroke="#7a9a5a" stroke-width="2"/>
+        <text x="510" y="300" text-anchor="middle" font-size="14" font-family="sans-serif" fill="#4a6b35">Grassrivers</text>
+        <ellipse cx="950" cy="302" rx="16" ry="7" fill="#eadfc2" stroke="#a67c1a" stroke-width="1.5"/>
+        <ellipse cx="992" cy="312" rx="20" ry="8" fill="#eadfc2" stroke="#a67c1a" stroke-width="1.5"/>
+        <ellipse cx="1040" cy="300" rx="14" ry="6" fill="#eadfc2" stroke="#a67c1a" stroke-width="1.5"/>
+        <text x="995" y="332" text-anchor="middle" font-size="13" font-family="sans-serif">Leonida Keys</text>
+        <circle cx="300" cy="112" r="6" fill="#0f5f5c"/>
+        <text x="312" y="116" font-size="14" font-weight="bold" font-family="sans-serif">Hamlet</text>
+        <circle cx="180" cy="258" r="6" fill="#0f5f5c"/>
+        <text x="192" y="262" font-size="14" font-weight="bold" font-family="sans-serif">Port Gellhorn</text>
+        <circle cx="980" cy="180" r="7" fill="#0f5f5c"/>
+        <text x="992" y="184" font-size="15" font-weight="bold" font-family="sans-serif">VICE CITY</text>
+        <polygon points="940,138 946,152 961,152 949,161 953,176 940,167 927,176 931,161 919,152 934,152" fill="#a33327" stroke="#7c241a" stroke-width="1.5"/>
+        <text x="910" y="128" text-anchor="middle" font-size="14" font-weight="bold" font-family="sans-serif" fill="#a33327">★ MISSABLE — Ch. 1 meditation</text>
+        <text x="910" y="196" text-anchor="middle" font-size="13" font-family="sans-serif" fill="#a33327">Positive Mental Attitude</text>
+        <circle cx="400" cy="238" r="7" fill="#c79a1d" stroke="#8a6d10" stroke-width="1.5"/>
+        <circle cx="700" cy="258" r="7" fill="#c79a1d" stroke="#8a6d10" stroke-width="1.5"/>
+        <circle cx="830" cy="210" r="7" fill="#c79a1d" stroke="#8a6d10" stroke-width="1.5"/>
+        <text x="700" y="38" text-anchor="middle" font-size="14" font-family="sans-serif" fill="#5c554b">● gold dots — collectible areas (see each trophy's guide)</text>
+        <text x="30" y="30" font-size="15" font-weight="bold" font-family="sans-serif">LEONIDA — schematic map, drawn for this guide, not to scale</text>
+      </g>
+      </svg>
+      <p class="map-legend">Red star: the one moment that can be missed (Chapter 1, Vice City). Gold dots: collectible areas. No official artwork or logos are used anywhere in this guide.</p>
+    </div>
     <div id="missablesList" class="missables-list"></div>
     <div class="save-box">
       <h3>Why only one?</h3>
@@ -121,13 +159,14 @@
 <footer>
   <p><strong>Sources.</strong> Trophy names, descriptions and grades are the official PlayStation list as published
   for Grand Theft Auto VI (55 trophies, 2026-11-18). Each guide below is written in this ledger's own words and names
-  the published guide its facts were checked against: PowerPyx — GTA 6 Trophy Guide &amp; Roadmap; PushSquare —
-  GTA 6: Trophy Guide &amp; Roadmap; KeenGamer — GTA 6 Trophy Guide &amp; Platinum Roadmap.</p>
+  the published guides its facts were checked against — 13 in all: PowerPyx, PushSquare, KeenGamer, Exophase,
+  PSNProfiles, TrueTrophies, PlayStationTrophies.org, IGN, GameSpot, Polygon, Eurogamer, TheGamer and Game8.</p>
   <p><strong>Offline.</strong> This page loads nothing from the network: no fonts, no scripts, no images from
   outside this folder. Progress lives only in this browser (localStorage) until you export it.</p>
   <p class="fineprint">An unofficial fan guide. Not affiliated with Rockstar Games or Sony Interactive Entertainment. No official artwork or logos are used.</p>
 </footer>
 
+<div id="toast" class="toast" role="status" hidden></div>
 <script type="module" src="js/app.js"></script>
 </body>
 </html>

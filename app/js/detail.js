@@ -9,7 +9,7 @@ import { KIND_LABELS, isHiddenBySpoiler } from './filters.js';
 import { stageForTrophy } from './roadmap.js';
 
 function sourceLine(source) {
-  return source.url ? `${source.name} — ${source.url}` : source.name;
+  return source.name;
 }
 
 export function renderDetail(pane, trophy, earned, spoilerOn, onToggleEarned) {

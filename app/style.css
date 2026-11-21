@@ -65,18 +65,18 @@ h3 { font-size: 16px; margin: 0 0 6px; }
   border-radius: 10px;
   padding: 12px 16px;
   box-shadow: var(--shadow);
-  min-width: 360px;
+  min-width: 430px;
 }
 .progress-ring {
-  width: 74px;
-  height: 74px;
+  width: 102px;
+  height: 102px;
   border-radius: 50%;
   flex: none;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 700;
-  font-size: 18px;
+  font-size: 24px;
   color: var(--teal);
   background: conic-gradient(var(--teal) 0deg, #e5dcc4 0deg);
   position: relative;
@@ -222,9 +222,16 @@ main { padding: 16px 28px 8px; }
 .tag.missable { color: var(--red); border-color: var(--red); background: var(--red-soft); }
 .tag.kind { color: var(--teal); border-color: var(--teal); background: var(--teal-soft); }
 .grade-dot {
-  width: 16px; height: 16px; border-radius: 50%; margin-top: 4px; flex: none;
-  border: 1px solid rgba(0, 0, 0, 0.25);
+  width: 28px; height: 28px; border-radius: 50%; margin-top: 2px; flex: none;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  font-size: 13px; font-weight: 800; color: rgba(0, 0, 0, 0.55);
 }
+.grade-dot.platinum::after { content: "P"; }
+.grade-dot.gold::after { content: "G"; }
+.grade-dot.silver::after { content: "S"; }
+.grade-dot.bronze::after { content: "B"; }
 .grade-dot.platinum { background: radial-gradient(circle at 35% 35%, #eef4f8, #8fa3b5); }
 .grade-dot.gold { background: radial-gradient(circle at 35% 35%, #ffe9a8, #c79a1d); }
 .grade-dot.silver { background: radial-gradient(circle at 35% 35%, #f2f2f2, #9aa1ab); }
@@ -330,3 +337,62 @@ footer {
   .masthead { flex-direction: column; }
   .progress-card { min-width: 0; }
 }
+
+/* R2 — citation banner, medals, map, toast, just-earned highlight. */
+.cite-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  margin: 14px 28px 0;
+  padding: 13px 18px;
+  background: var(--teal);
+  color: #fff;
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+}
+.cite-big {
+  font-family: "Segoe UI", system-ui, sans-serif;
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+  white-space: nowrap;
+}
+.cite-sub {
+  font-family: "Segoe UI", system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #cfe6e2;
+  text-align: right;
+}
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 26px;
+  transform: translateX(-50%);
+  background: #241f1a;
+  color: #fff;
+  border: 2px solid var(--gold);
+  border-radius: 8px;
+  padding: 13px 22px;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+  z-index: 50;
+}
+.trophy-row.just-earned {
+  outline: 3px solid var(--gold);
+  background: #fbf3d2;
+}
+.map-panel {
+  background: var(--paper-2);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin: 12px 0;
+  box-shadow: var(--shadow);
+}
+.map-panel h3 { font-size: 18px; }
+.map-panel svg { width: 100%; height: auto; display: block; border: 1px solid var(--rule); border-radius: 6px; }
+.map-legend { font-size: 13px; color: var(--ink-soft); margin: 8px 0 0; }
