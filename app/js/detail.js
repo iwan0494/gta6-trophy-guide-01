@@ -1,99 +1,54 @@
-// Leonida Ledger — the guide pane (detail.js).
-//
-// One job: show one trophy properly — official name, description and grade,
-// its kind and roadmap stage, the guide in this ledger's own words, the
-// steps, and the published guides its facts were checked against. A story
-// trophy hidden by the spoiler setting shows a placeholder instead.
+// The detail pane: official description, our own-words guide, steps, sources.
+const LETTER = { platinum: 'P', gold: 'G', silver: 'S', bronze: 'B' };
 
-import { KIND_LABELS, isHiddenBySpoiler } from './filters.js';
-import { stageForTrophy } from './roadmap.js';
-
-function sourceLine(source) {
-  return source.name;
-}
-
-export function renderDetail(pane, trophy, earned, spoilerOn, onToggleEarned) {
-  pane.replaceChildren();
-  if (!trophy) {
+export function renderDetail(container, t, earned, onToggle) {
+  container.innerHTML = '';
+  if (!t) {
     const empty = document.createElement('div');
-    empty.className = 'detail-empty';
-    const heading = document.createElement('h2');
-    heading.textContent = 'Pick a trophy';
-    const text = document.createElement('p');
-    text.textContent =
-      'Select any trophy on the left to read its guide: what to do, where and how, when it can be ' +
-      'missed, and which published guide the facts were checked against.';
-    const hint = document.createElement('p');
-    hint.textContent = 'Start with the flagged one: Positive Mental Attitude is the only missable trophy in the game.';
-    empty.append(heading, text, hint);
-    pane.append(empty);
+    empty.innerHTML = '<h2>Pick a trophy</h2><p>Select any trophy on the left to see its guide, steps and sources.</p>';
+    container.appendChild(empty);
     return;
   }
-
-  const hidden = isHiddenBySpoiler(trophy, earned, spoilerOn);
-  const tags = document.createElement('div');
-  tags.className = 'trophy-tags';
-  for (const [label, cls] of [
-    [trophy.grade, trophy.grade],
-    [KIND_LABELS[trophy.kind] ?? trophy.kind, 'kind'],
-    ...(trophy.missable ? [['Missable', 'missable']] : []),
-  ]) {
-    const tag = document.createElement('span');
-    tag.className = `tag ${cls}`;
-    tag.textContent = label;
-    tags.append(tag);
-  }
-
-  const heading = document.createElement('h2');
-  heading.textContent = hidden ? 'Hidden story trophy' : trophy.name;
+  const medal = document.createElement('div');
+  medal.className = `medal ${t.grade}`;
+  medal.textContent = LETTER[t.grade] || '?';
+  const title = document.createElement('h2');
+  title.textContent = t.name;
+  const gradeLine = document.createElement('p');
+  gradeLine.className = 'stage-line';
+  gradeLine.textContent = `${t.grade[0].toUpperCase() + t.grade.slice(1)} trophy · ${t.kind} · #${t.id} of 55`;
   const official = document.createElement('p');
-  official.className = 'detail-official';
-  official.textContent = hidden
-    ? 'Earn this trophy to reveal its name and description.'
-    : `“${trophy.description}” — official description`;
-  const stage = document.createElement('p');
-  stage.className = 'stage-line';
-  stage.textContent = `Roadmap stage ${stageForTrophy(trophy.id)} · ${trophy.grade} trophy`;
-  pane.append(tags, heading, official, stage);
-
-  if (trophy.missable) {
-    const banner = document.createElement('p');
-    banner.className = 'missable-banner';
-    banner.textContent = '⚠ Missable — read the warning below before you play past Chapter 1.';
-    pane.append(banner);
+  official.className = 'official';
+  official.textContent = `Official: “${t.description}”`;
+  container.append(medal, title, gradeLine, official);
+  if (t.missable) {
+    const warn = document.createElement('div');
+    warn.className = 'missable-banner';
+    warn.textContent = '⚠ MISSABLE — the only missable trophy. Meditate at all 18 spots before the story ends.';
+    container.appendChild(warn);
   }
-
-  if (!hidden) {
-    const guide = document.createElement('p');
-    guide.className = 'detail-guide';
-    guide.textContent = trophy.guide;
-    pane.append(guide);
-    if (Array.isArray(trophy.steps) && trophy.steps.length > 0) {
-      const steps = document.createElement('ol');
-      steps.className = 'detail-steps';
-      for (const step of trophy.steps) {
-        const item = document.createElement('li');
-        item.textContent = step;
-        steps.append(item);
-      }
-      pane.append(steps);
-    }
-    if (trophy.missableNote) {
-      const note = document.createElement('p');
-      note.className = 'missable-banner';
-      note.textContent = trophy.missableNote;
-      pane.append(note);
-    }
-    const sources = document.createElement('p');
-    sources.className = 'detail-sources';
-    sources.textContent = `Sources: ${(trophy.sources ?? []).map(sourceLine).join(' · ')}`;
-    pane.append(sources);
+  const guide = document.createElement('p');
+  guide.className = 'guide';
+  guide.textContent = t.guide;
+  container.appendChild(guide);
+  const stepsTitle = document.createElement('h3');
+  stepsTitle.textContent = 'Steps';
+  const steps = document.createElement('ol');
+  steps.className = 'steps';
+  for (const s of t.steps || []) {
+    const li = document.createElement('li');
+    li.textContent = s;
+    steps.appendChild(li);
   }
-
-  const toggle = document.createElement('button');
-  toggle.type = 'button';
-  toggle.className = 'earn-btn';
-  toggle.textContent = earned.has(trophy.id) ? '✓ Earned — mark as not earned' : 'Mark as earned';
-  toggle.addEventListener('click', () => onToggleEarned(trophy.id));
-  pane.append(toggle);
+  container.append(stepsTitle, steps);
+  const sources = document.createElement('p');
+  sources.className = 'sources';
+  sources.textContent = `Sources: ${(t.sources || []).join(' · ')} — guides in our own words; names, descriptions and grades from the official list.`;
+  container.appendChild(sources);
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'earn-btn';
+  btn.textContent = earned.has(t.id) ? '✓ Earned — click to unmark' : 'Mark as earned';
+  btn.addEventListener('click', () => onToggle(t));
+  container.appendChild(btn);
 }

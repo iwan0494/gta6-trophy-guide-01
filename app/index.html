@@ -4,47 +4,39 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Leonida Ledger — GTA VI Trophy Guide &amp; Tracker</title>
-<meta name="description" content="The offline guide and tracker for all 55 PlayStation 5 trophies of Grand Theft Auto VI: official list, cited guides, roadmap to the platinum, missable flags, saved progress.">
-<link rel="icon" href="favicon.svg">
 <link rel="stylesheet" href="style.css">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
 </head>
 <body>
 <header class="masthead">
-  <div class="masthead-title">
-    <p class="kicker">Grand Theft Auto VI · PlayStation 5 · 55 trophies</p>
+  <div>
+    <p class="kicker">Grand Theft Auto VI &middot; PlayStation 5 &middot; Trophy Guide &amp; Tracker</p>
     <h1>Leonida Ledger</h1>
-    <p class="subtitle">Every trophy, its guide, and the road to the platinum — kept in one book, offline.</p>
-  </div>
-  <div class="progress-card" aria-label="Platinum progress">
-    <div class="progress-ring" id="progressRing" role="img" aria-label="0 of 55 trophies earned">
-      <span id="progressPct">0%</span>
+    <p class="subtitle">Every one of the 55 official trophies, with a guide in our own words, a roadmap to the platinum, and a tracker that saves in your browser. Works fully offline.</p>
+    <div class="banner">55/55 trophies &middot; every step cited &middot; 13 sources
+      <small>1 Platinum &middot; 2 Gold &middot; 6 Silver &middot; 46 Bronze &middot; 28 hidden — the full official list</small>
     </div>
-    <div class="progress-text">
-      <p class="progress-line"><strong id="progressCount">0 of 55</strong> earned</p>
-      <p class="progress-sub" id="progressSub">Platinum: Vice Got a Price! — 54 to go</p>
+  </div>
+  <div class="progress-card" aria-label="Progress">
+    <div class="ring" id="ring"><span id="ringText">0<small>of 55</small></span></div>
+    <div>
+      <p class="progress-line" id="earnedLine">0 of 55 trophies earned</p>
+      <p class="progress-sub" id="earnedPct">0% — the platinum is waiting</p>
       <div class="grade-counts" id="gradeCounts"></div>
     </div>
   </div>
 </header>
-
-<div class="cite-banner" role="note">
-  <span class="cite-big">55/55 trophies &middot; every step cited &middot; 13 sources</span>
-  <span class="cite-sub">1 Platinum &middot; 2 Gold &middot; 6 Silver &middot; 46 Bronze &middot; 28 hidden &mdash; the full official list</span>
-</div>
-
 <nav class="tabs" aria-label="Views">
-  <button type="button" data-view="checklist" class="tab active" aria-current="page">Checklist</button>
-  <button type="button" data-view="roadmap" class="tab">Roadmap to Platinum</button>
-  <button type="button" data-view="missables" class="tab">Missables <span class="tab-badge">1</span></button>
+  <button class="tab active" data-view="checklist">Checklist</button>
+  <button class="tab" data-view="roadmap">Roadmap</button>
+  <button class="tab" data-view="missables">Missables</button>
+  <button class="tab" data-view="map">Leonida Map</button>
 </nav>
-
-<section class="toolbar" id="toolbar" aria-label="Find and filter trophies">
-  <label class="search-label">Search
-    <input id="searchInput" type="search" placeholder="Trophy, mission, place…" autocomplete="off">
-  </label>
+<div class="toolbar">
+  <label>Search <input type="search" id="search" placeholder="Trophy name…"></label>
   <label>Grade
     <select id="gradeFilter">
-      <option value="all">All grades</option>
+      <option value="">All grades</option>
       <option value="platinum">Platinum</option>
       <option value="gold">Gold</option>
       <option value="silver">Silver</option>
@@ -53,120 +45,83 @@
   </label>
   <label>Kind
     <select id="kindFilter">
-      <option value="all">All kinds</option>
+      <option value="">All kinds</option>
       <option value="story">Story</option>
-      <option value="missable">Missable</option>
-      <option value="collectibles">Collectibles</option>
-      <option value="activities">Activities</option>
-      <option value="milestone">Milestones</option>
+      <option value="activity">Activity</option>
+      <option value="combat">Combat</option>
+      <option value="exploration">Exploration</option>
+      <option value="misc">Misc</option>
     </select>
   </label>
-  <label>Status
-    <select id="statusFilter">
-      <option value="all">All</option>
-      <option value="earned">Earned</option>
-      <option value="remaining">Still to earn</option>
-    </select>
-  </label>
-  <label class="spoiler-label" title="Hide the names and descriptions of story trophies until you earn them">
-    <input id="spoilerToggle" type="checkbox"> Hide story spoilers
-  </label>
+  <label class="checkrow"><input type="checkbox" id="spoilerToggle"> Hide story trophies until earned</label>
   <span class="toolbar-spacer"></span>
   <button id="exportBtn" type="button">Export progress</button>
-  <label class="import-label">Import progress <input id="importInput" type="file" accept="application/json,.json"></label>
+  <label class="checkrow">Import <input type="file" id="importFile" accept="application/json"></label>
   <button id="resetBtn" type="button" class="quiet">Reset</button>
-</section>
-
+</div>
 <main>
-  <section id="checklistView" class="view">
+  <section class="view" id="view-checklist">
     <div class="ledger">
-      <div class="list-col">
-        <p class="list-meta" id="listMeta">55 trophies · 1 platinum · 2 gold · 6 silver · 46 bronze</p>
-        <ul id="trophyList" class="trophy-list"></ul>
-        <p class="list-empty" id="listEmpty" hidden>No trophy matches these filters. Clear the search or widen a filter.</p>
+      <div>
+        <p class="list-meta" id="listMeta"></p>
+        <ul class="trophy-list" id="trophyList"></ul>
       </div>
-      <aside class="detail-col" id="detailPane" aria-live="polite"></aside>
+      <aside class="detail-col" id="detail" aria-live="polite"></aside>
     </div>
   </section>
-
-  <section id="roadmapView" class="view" hidden>
-    <div class="roadmap-intro">
-      <h2>The road to the platinum</h2>
-      <p>About <strong>200 hours</strong>, difficulty <strong>4 / 10</strong>, <strong>one playthrough</strong>, <strong>no online trophies</strong>.
-      There is no mission replay, so keep a manual save at the start and the end of each chapter (15 slots) and
-      never play with cheats active — cheats disable trophies and saving while they are on.</p>
-      <p class="roadmap-note">Stages are built from the official trophy descriptions: which chapters and missions,
-      which collectibles and counts, in what order. Click any trophy chip to open its guide.</p>
-    </div>
-    <ol id="roadmapStages" class="roadmap-stages"></ol>
+  <section class="view" id="view-roadmap" hidden>
+    <h2>Roadmap to the platinum</h2>
+    <p class="roadmap-intro">Four stages, about 200 hours in total. Finish the story first, then activities, then the long clean-up — the missable meditation trophy is flagged in stage 1, because it cannot be fixed later.</p>
+    <ol class="stages" id="roadmapStages"></ol>
     <div class="save-box">
-      <h3>Save strategy — read this before Chapter 1</h3>
+      <h3>Before you finish the story</h3>
       <ul>
-        <li>Make a manual save at the start and end of every chapter. Ten saves cover the five chapters; rotate the other five during free-roam cleanup.</li>
-        <li>Do the Chapter 1 meditation the morning after <em>Down to Earth</em> (see Missables) — it is the only trophy moment that cannot be revisited.</li>
-        <li>After the final mission, free roam stays open and the 100% Completion checklist appears under Progress — almost everything left is still earnable then.</li>
+        <li>Meditate at every spot you pass — <strong>Positive Mental Attitude</strong> is the only missable trophy.</li>
+        <li>Try each activity type once for <strong>Master of None</strong>.</li>
+        <li>Keep your save after the final mission: free roam stays open for clean-up.</li>
       </ul>
     </div>
   </section>
-
-  <section id="missablesView" class="view" hidden>
-    <h2>Missable trophies</h2>
-    <p class="missables-intro">Built from the official descriptions, only <strong>one</strong> trophy can be missed — everything else is still earnable in free roam.</p>
-    <div class="map-panel">
-      <h3>Where it happens &mdash; map of Leonida</h3>
-      <svg viewBox="0 0 1160 262" role="img" aria-label="Schematic map of Leonida with the missable moment and collectible areas marked">
-        <g transform="translate(0,4) scale(1,0.75)">
-        <rect x="0" y="0" width="1160" height="340" fill="#cfe0e6"/>
-        <path d="M60,300 L120,180 L200,120 L330,80 L520,60 L700,80 L900,60 L1060,110 L1100,200 L1040,290 L820,310 L520,320 L260,315 Z" fill="#eadfc2" stroke="#a67c1a" stroke-width="2"/>
-        <ellipse cx="560" cy="190" rx="90" ry="38" fill="#9fc3d4" stroke="#5b8ba3" stroke-width="1.5"/>
-        <text x="560" y="195" text-anchor="middle" font-size="14" font-family="sans-serif" fill="#2c5a6e">Lake Leonida</text>
-        <polygon points="480,82 512,48 544,82" fill="#b9a98a" stroke="#8a7a5c" stroke-width="1.5"/>
-        <text x="512" y="102" text-anchor="middle" font-size="14" font-weight="bold" font-family="sans-serif">Mount Kalaga</text>
-        <path d="M420,270 q30,-14 60,0 t60,0 t60,0" fill="none" stroke="#7a9a5a" stroke-width="2"/>
-        <text x="510" y="300" text-anchor="middle" font-size="14" font-family="sans-serif" fill="#4a6b35">Grassrivers</text>
-        <ellipse cx="950" cy="302" rx="16" ry="7" fill="#eadfc2" stroke="#a67c1a" stroke-width="1.5"/>
-        <ellipse cx="992" cy="312" rx="20" ry="8" fill="#eadfc2" stroke="#a67c1a" stroke-width="1.5"/>
-        <ellipse cx="1040" cy="300" rx="14" ry="6" fill="#eadfc2" stroke="#a67c1a" stroke-width="1.5"/>
-        <text x="995" y="332" text-anchor="middle" font-size="13" font-family="sans-serif">Leonida Keys</text>
-        <circle cx="300" cy="112" r="6" fill="#0f5f5c"/>
-        <text x="312" y="116" font-size="14" font-weight="bold" font-family="sans-serif">Hamlet</text>
-        <circle cx="180" cy="258" r="6" fill="#0f5f5c"/>
-        <text x="192" y="262" font-size="14" font-weight="bold" font-family="sans-serif">Port Gellhorn</text>
-        <circle cx="980" cy="180" r="7" fill="#0f5f5c"/>
-        <text x="992" y="184" font-size="15" font-weight="bold" font-family="sans-serif">VICE CITY</text>
-        <polygon points="940,138 946,152 961,152 949,161 953,176 940,167 927,176 931,161 919,152 934,152" fill="#a33327" stroke="#7c241a" stroke-width="1.5"/>
-        <text x="910" y="128" text-anchor="middle" font-size="14" font-weight="bold" font-family="sans-serif" fill="#a33327">★ MISSABLE — Ch. 1 meditation</text>
-        <text x="910" y="196" text-anchor="middle" font-size="13" font-family="sans-serif" fill="#a33327">Positive Mental Attitude</text>
-        <circle cx="400" cy="238" r="7" fill="#c79a1d" stroke="#8a6d10" stroke-width="1.5"/>
-        <circle cx="700" cy="258" r="7" fill="#c79a1d" stroke="#8a6d10" stroke-width="1.5"/>
-        <circle cx="830" cy="210" r="7" fill="#c79a1d" stroke="#8a6d10" stroke-width="1.5"/>
-        <text x="700" y="38" text-anchor="middle" font-size="14" font-family="sans-serif" fill="#5c554b">● gold dots — collectible areas (see each trophy's guide)</text>
-        <text x="30" y="30" font-size="15" font-weight="bold" font-family="sans-serif">LEONIDA — schematic map, drawn for this guide, not to scale</text>
-      </g>
+  <section class="view" id="view-missables" hidden>
+    <h2>Missables</h2>
+    <p class="missables-intro">Only one trophy in the whole list can be missed. Everything else can be earned after the story in free roam.</p>
+    <div class="missables-list" id="missablesList"></div>
+  </section>
+  <section class="view" id="view-map" hidden>
+    <h2>Leonida map</h2>
+    <p>A schematic of the state drawn for this guide — not official artwork. The red star marks the missable meditation region; gold dots mark collectible areas.</p>
+    <div class="map-wrap">
+      <svg viewBox="0 0 1000 560" role="img" aria-label="Schematic map of Leonida">
+        <rect x="20" y="20" width="960" height="520" rx="24" fill="#e9dfc5" stroke="#a67c1a" stroke-width="3"/>
+        <path d="M60 420 Q 220 300 380 340 T 700 300 T 940 360 L 940 520 L 60 520 Z" fill="#cfe0d8" stroke="#0f5f5c" stroke-width="2"/>
+        <path d="M120 120 Q 300 60 480 110 T 880 100" fill="none" stroke="#8a5a2b" stroke-width="3" stroke-dasharray="8 6"/>
+        <circle cx="740" cy="180" r="46" fill="#dcebe8" stroke="#0f5f5c" stroke-width="2"/>
+        <text x="740" y="185" text-anchor="middle" font-size="16" fill="#0f5f5c" font-weight="bold">Lake Leonida</text>
+        <circle cx="220" cy="430" r="8" fill="#a67c1a" stroke="#5c554b"/>
+        <circle cx="420" cy="380" r="8" fill="#a67c1a" stroke="#5c554b"/>
+        <circle cx="640" cy="330" r="8" fill="#a67c1a" stroke="#5c554b"/>
+        <circle cx="860" cy="420" r="8" fill="#a67c1a" stroke="#5c554b"/>
+        <text x="700" y="90" text-anchor="middle" font-size="22" font-weight="bold" fill="#241f1a">LEONIDA</text>
+        <text x="180" y="180" font-size="18" font-weight="bold" fill="#241f1a">Vice City</text>
+        <text x="120" y="210" font-size="14" fill="#5c554b">Ocean Beach</text>
+        <text x="330" y="250" font-size="18" font-weight="bold" fill="#241f1a">Port Gellhorn</text>
+        <text x="560" y="250" font-size="18" font-weight="bold" fill="#241f1a">Mount Kalaga</text>
+        <text x="820" y="250" font-size="18" font-weight="bold" fill="#241f1a">Leonida Keys</text>
+        <text x="180" y="480" font-size="18" font-weight="bold" fill="#241f1a">Grassrivers</text>
+        <text x="520" y="480" font-size="18" font-weight="bold" fill="#241f1a">Ambrosia</text>
+        <polygon points="220,120 230,142 254,144 236,158 242,182 220,168 198,182 204,158 186,144 210,142" fill="#a33327" stroke="#fff" stroke-width="2"/>
+        <text x="270" y="160" font-size="15" font-weight="bold" fill="#a33327">Missable: meditate here</text>
+        <text x="60" y="545" font-size="13" fill="#5c554b">Gold dots: collectible areas — cards, WAiNK spots, garages. Schematic, drawn for this guide.</text>
       </svg>
-      <p class="map-legend">Red star: the one moment that can be missed (Chapter 1, Vice City). Gold dots: collectible areas. No official artwork or logos are used anywhere in this guide.</p>
-    </div>
-    <div id="missablesList" class="missables-list"></div>
-    <div class="save-box">
-      <h3>Why only one?</h3>
-      <p>Every other trophy is tied to a mission you will replay through the story, a count you can keep raising,
-      or a place you can revisit. The meditation in Chapter 1 is the single moment the story moves past: once
-      Chapter 1 ends, that balcony scene never comes back in that playthrough.</p>
+      <p class="map-note">Sources for the map regions: the official trophy descriptions (Exophase) and the guide sources listed below.</p>
     </div>
   </section>
 </main>
-
+<div class="toast" id="toast" hidden></div>
 <footer>
-  <p><strong>Sources.</strong> Trophy names, descriptions and grades are the official PlayStation list as published
-  for Grand Theft Auto VI (55 trophies, 2026-11-18). Each guide below is written in this ledger's own words and names
-  the published guides its facts were checked against — 13 in all: PowerPyx, PushSquare, KeenGamer, Exophase,
-  PSNProfiles, TrueTrophies, PlayStationTrophies.org, IGN, GameSpot, Polygon, Eurogamer, TheGamer and Game8.</p>
-  <p><strong>Offline.</strong> This page loads nothing from the network: no fonts, no scripts, no images from
-  outside this folder. Progress lives only in this browser (localStorage) until you export it.</p>
-  <p class="fineprint">An unofficial fan guide. Not affiliated with Rockstar Games or Sony Interactive Entertainment. No official artwork or logos are used.</p>
+  <p>Leonida Ledger — an unofficial, open-source fan guide. Grand Theft Auto and GTA are trademarks of Rockstar Games; this guide uses no Rockstar artwork, logos, or text.</p>
+  <p class="fineprint">Sources consulted for every guide: PowerPyx · PushSquare · KeenGamer · Exophase · PSNProfiles · TrueTrophies · PlayStationTrophies.org · IGN · GameSpot · Polygon · Eurogamer · TheGamer · Game8. Trophy names, descriptions and grades are the official PlayStation 5 list of 2026-11-18. Guides are written in our own words; where a place or step is not pinned down by a source, the guide says so.</p>
 </footer>
-
-<div id="toast" class="toast" role="status" hidden></div>
 <script type="module" src="js/app.js"></script>
 </body>
 </html>

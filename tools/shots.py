@@ -1,47 +1,58 @@
-# Leonida Ledger R2 — regenerate the 4 entry screenshots (1280x800, JPEG q82).
-# Run with the app served locally (node serve.ts --port 8080), from the repo root:
-#   python3 tools/shots.py
-import json, os, sys
-from playwright.sync_api import sync_playwright
+"""Leonida Ledger R3 screenshot runner (fresh): serves app/, seeds 9 earned
+trophies, captures the 4 judging shots at 1280x800 JPEG q82."""
+import json
+import os
+import subprocess
+import sys
+import time
+from pathlib import Path
 
-ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-BASE = "http://localhost:8080"
-OUT = os.path.join(ROOT, "screenshots")
-os.makedirs(OUT, exist_ok=True)
+ROOT = Path(__file__).resolve().parent.parent
+APP = ROOT / "app"
+SHOTS = ROOT / "screenshots"
+PORT = 8123
+SEED = [2, 3, 8, 9, 20, 28, 35, 42, 44]
 
-trophies = json.load(open(os.path.join(ROOT, "app/data/trophies.json")))["trophies"]
-# an early unearned trophy for the "just earned" action shot (demo seed earns 2,3,8,10,15,21,35,44,46)
-ACTION_ID = next(t["id"] for t in trophies if t["id"] not in (2, 3, 8, 10, 15, 21, 35, 44, 46) and t["id"] > 3)
-ACTION_NAME = next(t["name"] for t in trophies if t["id"] == ACTION_ID)
-print("action trophy:", ACTION_ID, ACTION_NAME)
+def main():
+    from playwright.sync_api import sync_playwright
 
-def shot(page, url, name):
-    page.goto(url, wait_until="networkidle")
-    page.wait_for_timeout(400)
-    page.evaluate("window.scrollTo(0,0)")
-    page.wait_for_timeout(150)
-    path = os.path.join(OUT, name)
-    page.screenshot(path=path, type="jpeg", quality=82)
-    print(name, os.path.getsize(path), "bytes")
+    server = subprocess.Popen(
+        [sys.executable, "-m", "http.server", str(PORT), "--directory", str(APP)],
+        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+    )
+    try:
+        with sync_playwright() as p:
+            browser = p.chromium.launch()
+            page = browser.new_page(viewport={"width": 1280, "height": 800})
+            page.goto(f"http://127.0.0.1:{PORT}/", wait_until="networkidle")
+            page.evaluate(
+                "ids => localStorage.setItem('leonida-ledger-v3', JSON.stringify({earned: ids}))",
+                SEED,
+            )
+            page.reload(wait_until="networkidle")
+            page.wait_for_timeout(600)
+            # 1: checklist, detail open on the missable trophy (default selection)
+            page.screenshot(path=str(SHOTS / "1-checklist.jpg"), type="jpeg", quality=82)
+            # 2: roadmap
+            page.click("button.tab[data-view='roadmap']")
+            page.wait_for_timeout(400)
+            page.screenshot(path=str(SHOTS / "2-roadmap.jpg"), type="jpeg", quality=82)
+            # 3: Leonida map
+            page.click("button.tab[data-view='map']")
+            page.wait_for_timeout(400)
+            page.screenshot(path=str(SHOTS / "3-missables.jpg"), type="jpeg", quality=82)
+            # 4: back to checklist, earn trophy 4 and catch the toast + new count
+            page.click("button.tab[data-view='checklist']")
+            page.wait_for_timeout(400)
+            page.click("button[data-trophy-id='4'] input[type='checkbox']")
+            page.wait_for_timeout(500)
+            page.screenshot(path=str(SHOTS / "4-detail.jpg"), type="jpeg", quality=82)
+            browser.close()
+    finally:
+        server.terminate()
+    for name in ["1-checklist.jpg", "2-roadmap.jpg", "3-missables.jpg", "4-detail.jpg"]:
+        f = SHOTS / name
+        print(name, f.stat().st_size, "bytes", "OK" if f.stat().st_size <= 262144 else "TOO BIG")
 
-with sync_playwright() as p:
-    browser = p.chromium.launch()
-    page = browser.new_page(viewport={"width": 1280, "height": 800})
-    # 1 — cover: checklist, a short guide open with its sources visible
-    shot(page, f"{BASE}/?seed=demo&trophy=2", "1-checklist.jpg")
-    # 2 — roadmap to platinum
-    shot(page, f"{BASE}/?view=roadmap&seed=demo", "2-roadmap.jpg")
-    # 3 — missables + hand-drawn Leonida map
-    shot(page, f"{BASE}/?view=missables&seed=demo", "3-missables.jpg")
-    # 4 — tracker in action: check a trophy, counter rises, toast + highlight show
-    page.goto(f"{BASE}/?seed=demo", wait_until="networkidle")
-    page.wait_for_timeout(400)
-    page.evaluate("window.scrollTo(0,0)")
-    row = page.locator("button.trophy-row", has_text=ACTION_NAME).first
-    row.locator("input[type=checkbox]").click()
-    page.wait_for_timeout(500)
-    path = os.path.join(OUT, "4-detail.jpg")
-    page.screenshot(path=path, type="jpeg", quality=82)
-    print("4-detail.jpg", os.path.getsize(path), "bytes")
-    browser.close()
-print("done")
+if __name__ == "__main__":
+    main()
